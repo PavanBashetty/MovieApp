@@ -1,5 +1,4 @@
 <template>
-
 <HeaderComponent />
 <H2>My Favorite Movies</H2>
 <table class="styled-table">
@@ -28,19 +27,15 @@
 </table>
 
 <FooterComponent />
-
-
 </template>
 
-  
 <script>
 import HeaderComponent from './Header.vue'
 import FooterComponent from './Footer.vue'
 import axios from 'axios'
 export default {
     name: 'FavoritesComp',
-    data()
-    {
+    data() {
         return {
             email: '',
             favorites: []
@@ -51,6 +46,14 @@ export default {
         FooterComponent
     },
     async mounted() {
+        //To return to home page if not logged in 
+        let user = localStorage.getItem('user-info');
+        if (!user) {
+            return this.$router.push({
+                name: 'HomePage'
+            });
+        }
+
         let userInfo = localStorage.getItem('user-info-email');
         if (userInfo !== null) {
             userInfo = userInfo.substring(1, (userInfo.length - 1));
@@ -58,6 +61,7 @@ export default {
         }
         let result = await axios.get('http://localhost:3000/favorites/?email=' + this.email + '');
         this.favorites = result.data;
+
     },
     methods: {
         async deleteMovie(id) {
@@ -75,7 +79,6 @@ export default {
 }
 </script>
 
-  
 <style>
 .styled-table {
     border-collapse: collapse;
@@ -120,5 +123,4 @@ export default {
     font-weight: bold;
     color: #009879;
 }
-
 </style>

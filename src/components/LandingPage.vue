@@ -59,6 +59,8 @@ export default {
                         this.movies = data.Search;
                         this.search = '';
                     });
+            }else{
+                alert('Enter a movie name!')
             }
         }
     },

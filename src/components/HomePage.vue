@@ -1,7 +1,7 @@
 <template>
 <body>
 <v-container fill-height fluid>
-    <v-row justify="end" id="divOne">
+    <v-row justify="end" >
         <v-col sm="6" offset-sm="3">
             <v-card class="pa-2" outlined tile style="background-color: bisque;">
                 <v-card-title class="text-xs-h6 text-md-h5 text-lg-h4"><b>Welcome to Movie App</b></v-card-title><br />

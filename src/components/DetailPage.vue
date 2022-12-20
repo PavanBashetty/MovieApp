@@ -1,15 +1,16 @@
 <template>
 <headerComp />
 
-
+    <!--Movie Title-->
     <v-card-title class="text-left font-weight-bold text-h4">{{ data?.Title }}</v-card-title>
-    <span class="wishlist movie_data_subheading">
 
+    <!--Favorite Button-->
+    <span class="wishlist movie_data_subheading">
         <p class="text-left mb-1 mt-2 ml-3">Add to Favourite:</p> 
         <img id="imgFav" v-bind:src="require('../assets/' + imgFavor)" style="width:32px;height:32px;" v-on:click="manageFavorite()" />
-
     </span>
 
+    <!--Movie Details-->
     <div class="d-flex">
         <img :src="data?.Poster" alt="movie_poster" />
         <div style="marginLeft:-10px;width:100%">
@@ -23,12 +24,11 @@
             <div class="mt-2 d-flex">
                 <v-btn color="#c2dff0" class="text-white mr-2" v-on:click="concatYTlink()"><a :href=YTlink target="_blank" style="text-decoration:none">Watch Trailer</a></v-btn>
                 <v-btn color="#c2dff0" class="text-white mr-2"><a href="https://netflix.com/" target="_blank" style="text-decoration:none">Watch Movie</a></v-btn>
-
             </div>
         </div>
-
     </div>
 
+    <!--More Movie Details-->
     <div>
         <p class="text-left text-h6 mb-1 mt-6 ml-3"><b>Description :</b></p>
         <p class="text-left mb-1 mt-2 ml-3">{{ data?.Plot }}</p>
@@ -38,7 +38,7 @@
         <p class="text-left mb-1 mt-2 ml-3"><b>Actors : </b> {{ data?.Actors }}</p>
     </div>
     
-
+    <!--Rating & Comparison Information-->
     <div class="d-flex mb-10 mt-10">
         <v-btn color="#1c3d63" class="text-white ml-5" v-on:click="setDialog(data?.Title)" >Submit rating</v-btn>
         <p v-if="data?.movieRating" class="movie_data_subheading"><b>Submitted Rating:</b> 
@@ -59,14 +59,11 @@
         </v-dialog>
         <v-spacer></v-spacer>
         <router-link :to=comparsionLink style="text-decoration:none"><v-btn color="#1c3d63" class="text-white mr-5">Compare With Other Movies</v-btn></router-link>
-
     </div>
-
-
- 
 
 <footerComp />
 </template>
+
 
 <script>
 import headerComp from './Header.vue';
@@ -74,9 +71,7 @@ import footerComp from './Footer.vue';
 import axios from 'axios';
 import RatingComp from './Rating.vue';
 import api from '@/api.js';
-import {
-    useRoute
-} from 'vue-router';
+import {useRoute} from 'vue-router';
 import {toRaw} from 'vue';
 
 export default {
@@ -102,12 +97,23 @@ export default {
         RatingComp
     },
     async mounted() {
+        //To return to home page if not logged in 
+        let userName = localStorage.getItem('user-info');
+        if(!userName){
+            return this.$router.push({
+                name: 'HomePage'
+            });
+        }
+
+        //To extract specific movie based on movie id 
         await axios
             .get(`https://www.omdbapi.com/?i=${this.route.params.id}&apikey=${api.apikey}&plot=full`)
             .then(response => this.data = response.data);
 
+        //Saving the same movie id in a variable to use it for comparison page
         this.comparsionLink = this.comparsionLink.concat(this.route.params.id);
 
+        //Using locally stored email for favorite page
         let userInfo = localStorage.getItem('user-info-email');
         if (userInfo !== null) {
             userInfo = userInfo.substring(1, (userInfo.length - 1));
@@ -115,7 +121,6 @@ export default {
         }
         this.fetchFavDetails();
     },
-
     methods: {
         concatYTlink() {
             let a = "https://www.youtube.com/results?search_query=";
@@ -139,11 +144,6 @@ export default {
             localStorage.setItem(obj?.title, JSON.stringify(obj))
             this.dialog = false;
         },
-        // comparisonPage() {
-        //     return this.$router.push({
-        //         name: 'ComparisonPage'
-        //     })
-        // },
         async manageFavorite() {
             if (this.chkFav == true) {
                 //alert(this.movieID);
@@ -177,88 +177,15 @@ export default {
 }
 </script>
 
-    <!-- Add "scoped" attribute to limit CSS to this component only -->
-
 <style scoped>
-.container {
-    margin: 40px 20px;
-}
-
-.movie_title {
-    font-size: 30px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.movie_img {
-    max-height: 30% !important;
-    height: 260px;
-    object-fit: cover;
-    width: 200px;
-}
-
 p {
     margin-bottom: 0px !important;
 }
-
-.section {
-    margin-top: 20px;
-    display: flex;
-}
-
-.side_section {
-    margin-left: 20px;
-    margin-bottom: 10px !important;
-    display: flex;
-    flex-direction: column;
-}
-
-.add_margin {
-    margin-bottom: 10px !important;
-}
-
 .movie_data_subheading {
     margin-bottom: 5px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
 }
-
-.btn {
-    padding: 6px;
-    background-color: #76b1fe;
-    border: none;
-    border-radius: 4px;
-    border: 2px solid #76b1fe;
-    margin-right: 10px;
-    margin-top: 20px;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background-color: #318afe;
-
-}
-
-.btn_1:hover {
-    background-color: #318afe !important;
-
-}
-
-.btn_1 {
-    background-color: #fff !important;
-    cursor: pointer;
-}
-
-.btn_list {
-    display: flex;
-    cursor: pointer;
-
-}
-
-.spacer {
-    display: flex;
-    justify-content: space-between;
-}
-
 .wishlist {
     position: absolute;
     min-width: 30px;
